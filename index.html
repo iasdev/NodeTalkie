@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>NodeTalkie!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="node_modules\bootstrap\dist\css\bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="chat.css" />
+    <script src="node_modules\jquery\dist\jquery.min.js"></script>
+    <script src="node_modules\bootstrap\dist\js\bootstrap.min.js"></script>
+    <script src="chat.js"></script>
+</head>
+
+<body>
+    <div class="jumbotron jumbotron-fluid">
+        <h3>NodeTalkie!</h3>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <textarea class="form-control" id="chatUsers" rows="15" disabled placeholder="0 users."></textarea>
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div class="form-group">
+                    <textarea class="form-control" id="chatBox" rows="15" disabled></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="newMsgBox" placeholder="Write your message!"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="userNameModal" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">NodeTalkie!</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Enter your username">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Connect!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
