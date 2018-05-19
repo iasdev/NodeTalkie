@@ -19,7 +19,9 @@ wssvc.on('connection', function connection(wsClient) {
         console.log("New message: " + message);
         
         connections.forEach(client => {
-            client.send(message);
+            if (client.readyState === ws.OPEN){
+                client.send(message);
+            }
         });
     });
 });
