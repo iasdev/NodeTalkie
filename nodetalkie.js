@@ -7,22 +7,69 @@ var wsPort = httpPort + 1;
 var httpsvc = express();
 httpsvc.use(express.static(__dirname));
 httpsvc.listen(httpPort);
-console.log("HTTP server listening on " + httpPort);
+console.log("Setting HTTP server on " + httpPort);
+console.log("Setting WS server on " + wsPort);
 
-var connections = [];
+var connectedClients = [];
 
-var wssvc = new ws.Server({port: wsPort});
+var wssvc = new ws.Server({ port: wsPort });
 wssvc.on('connection', function connection(wsClient) {
-    connections.push(wsClient);
-    
     wsClient.on('message', function incoming(message) {
+        //Log the new message
         console.log("New message: " + message);
-        
-        connections.forEach(client => {
-            if (client.readyState === ws.OPEN){
-                client.send(message);
-            }
-        });
+
+        //Handle JSON. We've assume we receive an stringify JSON.
+        var jsonMsg = JSON.parse(message);
+
+        switch (jsonMsg.type) {
+            case "login":
+                doLogin(jsonMsg.loginContent, wsClient);
+                break;
+            case "availableUsers":
+                sendConnectedClientNames(wsClient);
+                break;
+            case "data":
+                doBroadcast(jsonMsg.dataContent);
+                //Repeat to check if new users were connected
+                sendConnectedClientNames(wsClient);
+                break;
+        }
     });
 });
-console.log("WS server listening on " + wsPort);
+
+function doLogin(newLogin, newWSClient) {
+    if (newLogin) {
+        connectedClients.push({
+            login: newLogin,
+            connection: newWSClient
+        });
+    }
+}
+
+function sendConnectedClientNames(askingClient) {
+    var connectedClientsLoginArray = [];
+
+    connectedClients.forEach(client => {
+        connectedClientsLoginArray.push(client.login);
+    });
+
+    var responseMessage =
+        '{"type":"availableUsers","response":$data}'.replace("$data", JSON.stringify(connectedClientsLoginArray));
+
+    sendMessageIfConnected(askingClient, responseMessage);
+}
+
+function doBroadcast(newMessage) {
+    if (newMessage) {
+        connectedClients.forEach(client => {
+            var newMessageJSON = '{"type":"data","response":"$data"}'.replace("$data", newMessage);
+            sendMessageIfConnected(client.connection, newMessageJSON);
+        });
+    }
+}
+
+function sendMessageIfConnected(connection, msg) {
+    if (ws.OPEN == connection.readyState) {
+        connection.send(msg);
+    }
+}
