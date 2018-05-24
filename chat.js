@@ -8,6 +8,7 @@ var wsConnection;
 $(document).ready(function () {
     var userNameFieldRef = $("#userNameModal .modal-body input");
 
+    Notification.requestPermission();
     configureUserNameModal(userNameFieldRef);
     showUserNameModal();
     configureNewMsgBox();
@@ -109,6 +110,8 @@ function processNewMessage(newMessage) {
     var incomeMsg = $("#chatBox").val() + newMessage + "\n";
     $("#chatBox").val(incomeMsg);
     $("#chatBox").scrollTop($("#chatBox")[0].scrollHeight - $("#chatBox").height());
+
+    showNotificationIfAllowed("New message!");
 }
 
 function processAvailableUsers(availableUsers) {
@@ -119,4 +122,12 @@ function processAvailableUsers(availableUsers) {
         $("#chatUsers").val(newUser)
         $("#chatUsers").scrollTop($("#chatUsers")[0].scrollHeight - $("#chatUsers").height());
     });
+
+    showNotificationIfAllowed("New user logged in!");
+}
+
+function showNotificationIfAllowed(msg) {
+    if (Notification.permission === "granted") {
+        new Notification(msg);
+    }
 }

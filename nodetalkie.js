@@ -24,14 +24,10 @@ wssvc.on('connection', function connection(wsClient) {
         switch (jsonMsg.type) {
             case "login":
                 doLogin(jsonMsg.loginContent, wsClient);
-                break;
-            case "availableUsers":
-                sendConnectedClientNames(wsClient);
+                doBroadcastConnectedUsers();
                 break;
             case "data":
                 doBroadcast(jsonMsg.dataContent);
-                //Repeat to check if new users were connected
-                sendConnectedClientNames(wsClient);
                 break;
         }
     });
@@ -46,7 +42,7 @@ function doLogin(newLogin, newWSClient) {
     }
 }
 
-function sendConnectedClientNames(askingClient) {
+function doBroadcastConnectedUsers() {
     var connectedClientsLoginArray = [];
 
     connectedClients.forEach(client => {
@@ -56,7 +52,9 @@ function sendConnectedClientNames(askingClient) {
     var responseMessage =
         '{"type":"availableUsers","response":$data}'.replace("$data", JSON.stringify(connectedClientsLoginArray));
 
-    sendMessageIfConnected(askingClient, responseMessage);
+    connectedClients.forEach(client => {
+        sendMessageIfConnected(client.connection, responseMessage);
+    });
 }
 
 function doBroadcast(newMessage) {
