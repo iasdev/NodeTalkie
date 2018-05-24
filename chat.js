@@ -111,7 +111,7 @@ function processNewMessage(newMessage) {
     $("#chatBox").val(incomeMsg);
     $("#chatBox").scrollTop($("#chatBox")[0].scrollHeight - $("#chatBox").height());
 
-    showNotificationIfAllowed("New message!");
+    showNotificationIfAllowed("NodeTalkie!", "New message!", "img/newMessage.png");
 }
 
 function processAvailableUsers(availableUsers) {
@@ -123,11 +123,14 @@ function processAvailableUsers(availableUsers) {
         $("#chatUsers").scrollTop($("#chatUsers")[0].scrollHeight - $("#chatUsers").height());
     });
 
-    showNotificationIfAllowed("New user logged in!");
+    showNotificationIfAllowed("NodeTalkie!", "New user logged in!", "img/newUser.png");
 }
 
-function showNotificationIfAllowed(msg) {
+function showNotificationIfAllowed(title, msg, iconPath) {
     if (Notification.permission === "granted") {
-        new Notification(msg);
+        new Notification(title, {
+            icon : iconPath,
+            body: msg
+        });
     }
 }
