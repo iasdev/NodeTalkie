@@ -9,3 +9,10 @@
 - Bootstrap
 - WebSockets (Native API)
 - Notification (Native API)
+
+### Development tools used
+###### NodeJS
+- nodemon
+- forever
+- wscat
+- live-server
